@@ -1,0 +1,14 @@
+---
+description: Understanding project structure
+globs: 
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+# Agent Devin
+agent-devin is a cloudflare workers project with a react, vite, typescript frontend and a Hono API backend.
+- shared types can be found in `src/types`
+

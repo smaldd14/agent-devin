@@ -8,6 +8,15 @@
 "compilerOptions": {
     "types": [
         "@cloudflare/workers-types/2023-07-01"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@types/*": ["./src/types/*"],
+      "@components/*": ["./src/react-app/components/*"],
+      "@lib/*": ["./src/react-app/lib/*"],
+      "@hooks/*": ["./src/react-app/hooks/*"],
+      "@pages/*": ["./src/react-app/pages/*"],
+    }
 }
 }

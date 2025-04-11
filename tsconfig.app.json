@@ -20,7 +20,18 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@types/*": ["./src/types/*"],
+      "@components/*": ["./src/react-app/components/*"],
+      "@lib/*": ["./src/react-app/lib/*"],
+      "@hooks/*": ["./src/react-app/hooks/*"],
+      "@pages/*": ["./src/react-app/pages/*"],
+    }
   },
-  "include": ["src/react-app"]
+  "include": ["src/react-app", "src/lib", "src/types"]
 }
