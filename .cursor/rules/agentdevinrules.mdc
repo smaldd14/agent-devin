@@ -1,6 +1,7 @@
 ---
 description: Understanding project structure
 globs: 
+alwaysApply: false
 ---
 
 # Your rule content
@@ -11,4 +12,11 @@ globs:
 # Agent Devin
 agent-devin is a cloudflare workers project with a react, vite, typescript frontend and a Hono API backend.
 - shared types can be found in `src/types`
+
+
+## Frontend
+The frontend application can be found at `src/react-app`. It is a react, vite, typescript, shadcn/ui project.
+
+### Shared Components
+- Use Shadcn/ui cli to add any shared components to `src/react-app/components/ui`
 

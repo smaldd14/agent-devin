@@ -1,4 +1,6 @@
 import HomePage from '@pages/Home';
+import RecipesPage from '@pages/Recipes';
+import RecipeDetailPage from '@pages/Recipes/RecipeDetail';
 import { ComponentType } from 'react';
 
 export type RouteType = {
@@ -18,6 +20,16 @@ const routes: RoutesConfig = [
     key: "Root",
     component: HomePage,
     index: true,
+  },
+  {
+    path: "/recipes",
+    key: "Recipes",
+    component: RecipesPage,
+  },
+  {
+    path: "/recipes/:id",
+    key: "RecipeDetail",
+    component: RecipeDetailPage,
   },
 ];
 

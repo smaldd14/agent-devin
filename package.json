@@ -2,6 +2,14 @@
   "name": "vite-react-template",
   "description": "A template for building a React application with Vite, Hono, and Cloudflare Workers",
   "version": "0.0.0",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "deploy": "npm run build && wrangler deploy",
+    "dev": "vite",
+    "lint": "eslint .",
+    "preview": "npm run build && vite preview",
+    "types": "wrangler types"
+  },
   "cloudflare": {
     "label": "Vite React Template",
     "products": [
@@ -15,6 +23,7 @@
     "dash": true
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.4.3",
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/react-tooltip": "^1.2.0",
     "@tailwindcss/vite": "^4.1.3",
@@ -47,14 +56,6 @@
     "typescript-eslint": "8.29.0",
     "vite": "6.2.5",
     "wrangler": "^4.9.1"
-  },
-  "scripts": {
-    "build": "tsc -b && vite build",
-    "deploy": "npm run build && wrangler deploy",
-    "dev": "vite",
-    "lint": "eslint .",
-    "preview": "npm run build && vite preview",
-    "types": "wrangler types"
   },
   "type": "module"
 }

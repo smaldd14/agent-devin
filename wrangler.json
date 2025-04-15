@@ -16,7 +16,14 @@
 	"upload_source_maps": true,
 	"assets": {
 		"not_found_handling": "single-page-application"
-	}
+	},
+	"d1_databases": [
+		{
+		"binding": "DB",
+		"database_name": "agent-devin",
+		"database_id": "5c96bd9f-b7a7-446d-bf8a-74ac3cb4da09"
+		}
+	]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
