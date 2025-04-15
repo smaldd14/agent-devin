@@ -18,5 +18,5 @@ agent-devin is a cloudflare workers project with a react, vite, typescript front
 The frontend application can be found at `src/react-app`. It is a react, vite, typescript, shadcn/ui project.
 
 ### Shared Components
-- Use Shadcn/ui cli to add any shared components to `src/react-app/components/ui`
+- Use Shadcn/ui cli to add any shared components to `src/react-app/components/ui
 
