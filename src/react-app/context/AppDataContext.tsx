@@ -1,11 +1,13 @@
 // src/react-app/context/AppDataContext.tsx
 import { createContext, useContext, ReactNode } from 'react';
 import { useRecipesState, RecipesState, RecipesActions } from './recipes/recipesState';
+import { useInventoryState, InventoryState, InventoryActions } from './inventory/inventoryState';
 
 // Define the shape of our context data - combining all entity states and actions
 interface AppDataContextType {
   recipes: RecipesState & RecipesActions;
-  // We'll add inventory and shopping lists later as needed
+  inventory: InventoryState & InventoryActions;
+  // We'll add shopping lists later as needed
   // This structure makes it easy to expand
 }
 
@@ -16,6 +18,7 @@ const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
 export function AppDataProvider({ children }: { children: ReactNode }) {
   // Get state and actions from each entity module
   const [recipesState, recipesActions] = useRecipesState();
+  const [inventoryState, inventoryActions] = useInventoryState();
 
   // Combine all states and actions into a single object
   const value: AppDataContextType = {
@@ -23,7 +26,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       ...recipesState,
       ...recipesActions
     },
-    // When we add inventory and shopping lists, they'll follow the same pattern
+    inventory: {
+      ...inventoryState,
+      ...inventoryActions
+    },
+    // When we add shopping lists, they'll follow the same pattern
   };
 
   return (

@@ -83,7 +83,7 @@ export async function getRecipeById(c: Context): Promise<Response> {
 
 export async function createRecipe(c: Context): Promise<Response> {
   try {
-    const data = c.get('json') as CreateRecipeRequest;
+    const data = (c.req as any).valid('json') as CreateRecipeRequest;
     
     // Start a transaction for creating recipe and ingredients
     const recipeStmt = c.env.DB.prepare(

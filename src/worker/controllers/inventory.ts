@@ -31,7 +31,13 @@ export const createItemSchema = z.object({
   restock_flag: z.boolean().default(false)
 });
 
+// Schema for batch creation - array of items with limit
+export const batchCreateItemsSchema = z.object({
+  items: z.array(createItemSchema).min(1, 'At least one item is required').max(50, 'Maximum 50 items per batch')
+});
+
 export type CreateItemRequest = z.infer<typeof createItemSchema>;
+export type BatchCreateItemsRequest = z.infer<typeof batchCreateItemsSchema>;
 
 export const updateItemSchema = createItemSchema.partial();
 export type UpdateItemRequest = z.infer<typeof updateItemSchema>;
@@ -86,8 +92,10 @@ export async function getItemById(c: Context): Promise<Response> {
 
 export async function createItem(c: Context): Promise<Response> {
   try {
-    // Get the validated JSON data
-    const data = c.get('json') as CreateItemRequest;
+    // Retrieve the validated JSON data from the request
+    // Retrieve validated request body (JSON) via zod-validator
+    const data = (c.req as any).valid('json') as CreateItemRequest;
+    console.log('Creating inventory item with data:', data);
     
     const result = await c.env.DB.prepare(`
       INSERT INTO inventory_items (
@@ -134,7 +142,8 @@ export async function createItem(c: Context): Promise<Response> {
 export async function updateItem(c: Context): Promise<Response> {
   try {
     const id = c.req.param('id');
-    const data = c.get('json') as UpdateItemRequest;
+    // Retrieve validated request body (JSON) via zod-validator
+    const data = (c.req as any).valid('json') as UpdateItemRequest;
     
     // Verify item exists
     const existingItem = await c.env.DB.prepare(
@@ -183,5 +192,89 @@ export async function updateItem(c: Context): Promise<Response> {
   } catch (err) {
     console.error('Error updating inventory item:', err);
     return error(c, 'Failed to update inventory item');
+  }
+}
+
+/**
+ * Create multiple inventory items in a batch operation
+ */
+export async function batchCreateItems(c: Context): Promise<Response> {
+  try {
+    // Retrieve validated batch request body (JSON) via zod-validator
+    const { items } = (c.req as any).valid('json') as BatchCreateItemsRequest;
+    
+    const createdItems: InventoryItem[] = [];
+    const errors: Record<number, string> = {};
+    let hasErrors = false;
+    
+    // Use D1's transaction API instead of raw SQL BEGIN TRANSACTION
+    await c.env.DB.prepare('SELECT 1').first(); // Ensure connection is established
+    
+    const result = await c.env.DB.batch(items.map((item) => {
+      return c.env.DB.prepare(`
+        INSERT INTO inventory_items (
+          item_name, category, subcategory, item_description, brand, 
+          storage_location, quantity, unit, minimum_quantity, expiry_date, 
+          purchase_date, unit_price, notes, restock_flag
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        item.item_name,
+        item.category,
+        item.subcategory || null,
+        item.item_description || null,
+        item.brand || null,
+        item.storage_location,
+        item.quantity,
+        item.unit,
+        item.minimum_quantity || null,
+        item.expiry_date || null,
+        item.purchase_date,
+        item.unit_price || null,
+        item.notes || null,
+        item.restock_flag ? 1 : 0
+      );
+    }));
+    
+    // Process results and fetch created items
+    for (let i = 0; i < result.length; i++) {
+      try {
+        const insertResult = result[i];
+        const itemId = insertResult.meta.last_row_id;
+        
+        // Fetch the created item
+        const rawItem = await c.env.DB.prepare(
+          'SELECT * FROM inventory_items WHERE id = ?'
+        ).bind(itemId).first() as RawItem;
+        
+        // Convert SQLite 0/1 to boolean
+        const parsedItem: InventoryItem = {
+          ...rawItem,
+          restock_flag: rawItem.restock_flag === 1
+        };
+        
+        createdItems.push(parsedItem);
+      } catch (err) {
+        console.error(`Error processing result at index ${i}:`, err);
+        errors[i] = `Failed to process item: ${(err as Error).message || 'Unknown error'}`;
+        hasErrors = true;
+      }
+    }
+    
+    if (hasErrors && createdItems.length === 0) {
+      // Complete failure
+      return error(c, 'Failed to create any inventory items', 400, { errors });
+    } else if (hasErrors) {
+      // Partial success
+      return success(c, { items: createdItems }, 207, { 
+        message: 'Partially completed with errors',
+        errors 
+      }); // 207 Multi-Status
+    } else {
+      // Complete success
+      return success(c, { items: createdItems }, 201);
+    }
+  } catch (err) {
+    console.error('Error in batch create inventory items:', err);
+    return error(c, 'Failed to process batch creation');
   }
 }
