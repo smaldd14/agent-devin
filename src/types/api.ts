@@ -16,6 +16,7 @@ export interface ApiResponse<T> {
     difficulty?: string;
     created_at: string;
     updated_at?: string;
+    ingredients?: RecipeIngredient[];
   }
   
   export interface RecipeIngredient {
