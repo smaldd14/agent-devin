@@ -32,7 +32,7 @@ export function useRecipe(id: number | null) {
     return () => {
       recipes.clearCurrentRecipe();
     };
-  }, [id, recipes]);
+  }, [id, recipes.fetchRecipe, recipes.clearCurrentRecipe]);
 
   return {
     recipe: recipes.current,
