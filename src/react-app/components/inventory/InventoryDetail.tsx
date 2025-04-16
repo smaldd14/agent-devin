@@ -69,7 +69,7 @@ export function InventoryDetail({ item }: InventoryDetailProps) {
                   <div className="flex items-center text-sm">
                     <DollarSign className="h-4 w-4 mr-2 text-muted-foreground" />
                     <dt className="font-medium w-24">Unit Price:</dt>
-                    <dd>${item.unit_price.toFixed(2)}</dd>
+                    <dd>{item.unit_price ? `$${item.unit_price.toFixed(2)}` : 'N/A'}</dd>
                   </div>
                 )}
               </dl>

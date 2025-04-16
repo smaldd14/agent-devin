@@ -138,8 +138,8 @@ export function useInventoryState(): [InventoryState, InventoryActions] {
         return {
           success: true,
           items: response.data.items,
-          errors: response.errors,
-          message: response.message
+          errors: response.data.errors,
+          message: response.data.message
         };
       } else {
         setError(response.error || 'Failed to create inventory items');
@@ -147,7 +147,7 @@ export function useInventoryState(): [InventoryState, InventoryActions] {
           success: false,
           items: [],
           message: response.error || 'Failed to create inventory items',
-          errors: response.errors
+          errors: response.data?.errors
         };
       }
     } catch (err) {
