@@ -3,6 +3,12 @@
 This repository implements a full-stack application deployed to Cloudflare Workers, featuring:
 - A React + TypeScript front-end built with Vite
 - A Hono API backend running on Cloudflare Workers
+- When implementing new features, prefer using cloudflare products that already exist such as:
+  - Durable Objects
+  - KV
+  - D1 (SQLite)
+  - R2
+  - Browser Rendering
 
 ---
 
