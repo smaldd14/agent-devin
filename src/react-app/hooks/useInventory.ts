@@ -18,6 +18,9 @@ export function useInventory() {
     refetch: inventory.fetchInventoryItems,
     createItem: inventory.createInventoryItem,
     batchCreateItems: inventory.batchCreateInventoryItems,
+    updateItem: inventory.updateInventoryItem,
+    deleteItem: inventory.deleteInventoryItem,
+    batchDeleteItems: inventory.batchDeleteInventoryItems,
   };
 }
 
@@ -55,6 +58,9 @@ export function useInventoryOperations() {
   return {
     createItem: inventory.createInventoryItem,
     batchCreateItems: inventory.batchCreateInventoryItems,
+    updateItem: inventory.updateInventoryItem,
+    deleteItem: inventory.deleteInventoryItem,
+    batchDeleteItems: inventory.batchDeleteInventoryItems,
     isLoading: inventory.isLoading,
     error: inventory.error
   };

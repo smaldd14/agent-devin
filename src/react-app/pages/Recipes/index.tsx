@@ -1,15 +1,17 @@
 // src/react-app/pages/Recipes/index.tsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/react-app/components/layout/PageHeader';
 import { RecipeCard } from '@/react-app/components/recipes/RecipeCard';
 import { useRecipes } from '@/react-app/hooks/useRecipes';
 import { Button } from '@/react-app/components/ui/button';
 import { Input } from '@/react-app/components/ui/input';
 import { Skeleton } from '@/react-app/components/ui/skeleton';
-import { PlusCircle, RefreshCw, Search } from 'lucide-react';
+import { PlusCircle, RefreshCw, Search, BookOpen } from 'lucide-react';
 
 export default function RecipesPage() {
   const { recipes, isLoading, error, refetch } = useRecipes();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filter recipes based on search term
@@ -34,13 +36,17 @@ export default function RecipesPage() {
 
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
-      <PageHeader 
-        title="Recipes" 
+      <PageHeader
+        title="Recipes"
         description="Browse all your recipes or search for something specific."
       >
         <Button variant="outline" size="sm" onClick={() => refetch()}>
           <RefreshCw className="h-4 w-4 mr-2" />
           Refresh
+        </Button>
+        <Button size="sm" onClick={() => navigate('/recipes/generate')}>
+          <BookOpen className="h-4 w-4 mr-2" />
+          Generate Recipes
         </Button>
         <Button size="sm">
           <PlusCircle className="h-4 w-4 mr-2" />

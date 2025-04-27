@@ -3,6 +3,7 @@ import RecipesPage from '@pages/Recipes';
 import RecipeDetailPage from '@pages/Recipes/RecipeDetail';
 import InventoryPage from '@pages/Inventory';
 import InventoryDetailPage from '@pages/Inventory/InventoryDetail';
+import GenerateRecipesPage from '@pages/GenerateRecipes';
 import { ComponentType } from 'react';
 
 export type RouteType = {
@@ -27,6 +28,11 @@ const routes: RoutesConfig = [
     path: "/recipes",
     key: "Recipes",
     component: RecipesPage,
+  },
+  {
+    path: "/recipes/generate",
+    key: "GenerateRecipes",
+    component: GenerateRecipesPage,
   },
   {
     path: "/recipes/:id",

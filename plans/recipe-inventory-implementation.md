@@ -31,9 +31,9 @@ The project is structured as follows:
   - [x] Implement functions to fetch all recipes and individual recipe details
   - [x] Use the API types already defined in `src/types/api.ts`
 
-- [ ] **File: `/src/react-app/services/inventory.ts`**
-  - [ ] Implement functions to fetch all inventory items and individual item details
-  - [ ] Use the API types already defined in `src/types/api.ts`
+- [x] **File: `/src/react-app/services/inventory.ts`**
+  - [x] Implement functions to fetch all inventory items and individual item details
+  - [x] Use the API types already defined in `src/types/api.ts`
 
 ### 2. Create UI Components
 
@@ -64,13 +64,13 @@ The project is structured as follows:
 
 #### Inventory Components
 
-- [ ] **File: `/src/react-app/components/inventory/InventoryTable.tsx`**
-  - [ ] Table component for displaying inventory items with sorting and filtering
-  - [ ] Include columns for name, category, quantity, location, etc.
+- [x] **File: `/src/react-app/components/inventory/InventoryTable.tsx`**
+  - [x] Table component for displaying inventory items with sorting and filtering
+  - [x] Include columns for name, category, quantity, location, etc.
 
-- [ ] **File: `/src/react-app/components/inventory/InventoryDetail.tsx`**
-  - [ ] Component for displaying detailed inventory item information
-  - [ ] Display all available information about the inventory item
+- [x] **File: `/src/react-app/components/inventory/InventoryDetail.tsx`**
+  - [x] Component for displaying detailed inventory item information
+  - [x] Display all available information about the inventory item
 
 ### 3. Create Page Components
 
@@ -85,15 +85,15 @@ The project is structured as follows:
   - [x] Display the complete recipe information including ingredients
   - [x] Add loading and error states
 
-- [ ] **File: `/src/react-app/pages/Inventory/index.tsx`**
-  - [ ] Main inventory page showing a table of inventory items
-  - [ ] Include search, filter, and sort functionality
-  - [ ] Add loading state for when inventory items are being fetched
+- [x] **File: `/src/react-app/pages/Inventory/index.tsx`**
+  - [x] Main inventory page showing a table of inventory items
+  - [x] Include search, filter, and sort functionality
+  - [x] Add loading state for when inventory items are being fetched
 
-- [ ] **File: `/src/react-app/pages/Inventory/InventoryDetail.tsx`**
-  - [ ] Individual inventory item detail page
-  - [ ] Display all information about the inventory item
-  - [ ] Add loading and error states
+- [x] **File: `/src/react-app/pages/Inventory/InventoryDetail.tsx`**
+  - [x] Individual inventory item detail page
+  - [x] Display all information about the inventory item
+  - [x] Add loading and error states
 
 ### 4. Update Router Configuration
 
@@ -120,10 +120,10 @@ The project is structured as follows:
     - [x] Include loading, error, and data states
     - [x] Implement functions for fetching and caching recipes
 
-  - [ ] **File: `/src/react-app/context/inventory/inventoryState.ts`**
-    - [ ] Implement inventory state management
-    - [ ] Include loading, error, and data states
-    - [ ] Implement functions for fetching and caching inventory items
+  - [x] **File: `/src/react-app/context/inventory/inventoryState.ts`**
+    - [x] Implement inventory state management
+    - [x] Include loading, error, and data states
+    - [x] Implement functions for fetching and caching inventory items
 
 ### 7. Implement Hooks
 
@@ -131,9 +131,9 @@ The project is structured as follows:
   - [x] Create a hook for accessing recipe data and functions
   - [x] Include functions for fetching all recipes and individual recipes
 
-- [ ] **File: `/src/react-app/hooks/useInventory.ts`**
-  - [ ] Create a hook for accessing inventory data and functions
-  - [ ] Include functions for fetching all inventory items and individual items
+- [x] **File: `/src/react-app/hooks/useInventory.ts`**
+  - [x] Create a hook for accessing inventory data and functions
+  - [x] Include functions for fetching all inventory items and individual items
 
 ### 8. Update App Component
 
@@ -156,15 +156,15 @@ The project is structured as follows:
 4. [x] Connect to the API
 
 ### Phase 3: Inventory Pages (In Progress)
-1. [ ] Create inventory-specific components
-2. [ ] Implement the inventory list page
-3. [ ] Implement the inventory detail page
-4. [ ] Connect to the API
+1. [x] Create inventory-specific components
+2. [x] Implement the inventory list page
+3. [x] Implement the inventory detail page
+4. [x] Connect to the API
 
 ### Phase 4: Polish and Testing (In Progress)
 1. [x] Add loading and error states
 2. [x] Implement search functionality
-3. [ ] Test the application with real data
+3. [x] Test the application with real data
 4. [x] Add responsive design adjustments
 
 ## Design Guidelines
@@ -173,7 +173,7 @@ The project is structured as follows:
 2. [x] Implement responsive design for all pages
 3. [x] Use ShadcnUI components for UI consistency
 4. [x] Implement error states and loading indicators
-5. [ ] Ensure accessibility compliance
+5. [x] Ensure accessibility compliance
 
 ## Future Enhancements
 

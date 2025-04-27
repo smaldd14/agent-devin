@@ -278,3 +278,70 @@ export async function batchCreateItems(c: Context): Promise<Response> {
     return error(c, 'Failed to process batch creation');
   }
 }
+
+// Schema for batch deletion of items by ID
+export const batchDeleteItemsSchema = z.object({
+  ids: z.array(z.number().int()).min(1, 'At least one id is required').max(50, 'Maximum 50 items per batch')
+});
+export type BatchDeleteItemsRequest = z.infer<typeof batchDeleteItemsSchema>;
+
+// Controller to delete a single inventory item
+export async function deleteItem(c: Context): Promise<Response> {
+  try {
+    const id = c.req.param('id');
+    const result = await c.env.DB.prepare(
+      'DELETE FROM inventory_items WHERE id = ?'
+    ).bind(id).run();
+    // Check that a row was deleted
+    if ((result.meta as any).changes === 0) {
+      return error(c, 'Item not found', 404);
+    }
+    return success(c, { id: Number(id) });
+  } catch (err) {
+    console.error('Error deleting inventory item:', err);
+    return error(c, 'Failed to delete inventory item');
+  }
+}
+
+// Controller to delete multiple inventory items in a batch
+export async function batchDeleteItems(c: Context): Promise<Response> {
+  try {
+    const { ids } = (c.req as any).valid('json') as BatchDeleteItemsRequest;
+    const deletedIds: number[] = [];
+    const errors: Record<number, string> = {};
+    let hasErrors = false;
+
+    // Execute deletes in a single transaction
+    const stmts = ids.map(id =>
+      c.env.DB.prepare('DELETE FROM inventory_items WHERE id = ?').bind(id)
+    );
+    const results = await c.env.DB.batch(stmts);
+
+    // Process results
+    for (let i = 0; i < results.length; i++) {
+      const res = results[i];
+      const id = ids[i];
+      const changes = (res.meta as any).changes;
+      if (changes && changes > 0) {
+        deletedIds.push(id);
+      } else {
+        hasErrors = true;
+        errors[id] = 'Item not found';
+      }
+    }
+
+    if (hasErrors && deletedIds.length === 0) {
+      return error(c, 'Failed to delete any inventory items', 400, { errors });
+    } else if (hasErrors) {
+      return success(c, { deleted: deletedIds }, 207, {
+        message: 'Partially deleted with errors',
+        errors
+      });
+    } else {
+      return success(c, { deleted: deletedIds });
+    }
+  } catch (err) {
+    console.error('Error in batch delete inventory items:', err);
+    return error(c, 'Failed to process batch deletion');
+  }
+}

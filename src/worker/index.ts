@@ -6,6 +6,8 @@ import { setupRoutes } from './routes';
 // Define the environment interface
 interface Env {
   DB: D1Database;
+  // API key for AI LLM
+  OPENAI_API_KEY: string;
 }
 
 // Create a new Hono app with proper typing

@@ -82,6 +82,25 @@ export interface ApiResponse<T> {
     created_at: string;
   }
   
+  // AI-generated recipe types
+  export interface GeneratedRecipe {
+    name: string;
+    ingredients: {
+      ingredient_name: string;
+      quantity: number;
+      unit: string;
+      is_protein: boolean;
+    }[];
+    instructions: string;
+    cooking_time: number;
+    difficulty: string;
+  }
+
+  export interface GenerateRecipesResponse {
+    recipes: GeneratedRecipe[];
+    shopping_list: string[];
+  }
+  
   // Response types
   export type RecipeResponse = ApiResponse<Recipe>;
   export type RecipesResponse = ApiResponse<Recipe[]>;

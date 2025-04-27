@@ -1,6 +1,6 @@
 // src/react-app/pages/Inventory/index.tsx
 import { useState } from 'react';
-import { Search, AlertTriangle } from 'lucide-react';
+import { Search, AlertTriangle, PlusCircle } from 'lucide-react';
 import { useInventory } from '@/react-app/hooks/useInventory';
 import { InventoryTable } from '@/react-app/components/inventory/InventoryTable';
 import { PageHeader } from '@/react-app/components/layout/PageHeader';
@@ -8,9 +8,11 @@ import { Button } from '@/react-app/components/ui/button';
 import { Input } from '@/react-app/components/ui/input';
 import { Badge } from '@/react-app/components/ui/badge';
 import { Skeleton } from '@/react-app/components/ui/skeleton';
+import { InventoryItem } from '@/types/api';
 
 export default function InventoryPage() {
-  const { items, isLoading, error, refetch } = useInventory();
+  const { items, isLoading, error, refetch, createItem } = useInventory();
+  const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'low-stock'>('all');
   
@@ -44,7 +46,72 @@ export default function InventoryPage() {
       <PageHeader
         title="Inventory"
         description="View and manage your inventory items"
-      />
+      >
+        <Button size="sm" onClick={() => setShowForm(true)}>
+          <PlusCircle className="h-4 w-4 mr-1" />
+          New Item
+        </Button>
+      </PageHeader>
+      {showForm && (
+        <div className="mb-6 p-4 border rounded-md">
+          <h2 className="text-lg font-medium mb-4">Add New Inventory Item</h2>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.currentTarget as HTMLFormElement;
+              const data = new FormData(form);
+              // Build payload
+              const payload: Omit<InventoryItem, 'id' | 'created_at' | 'updated_at'> = {
+                item_name: data.get('item_name') as string,
+                category: data.get('category') as string,
+                storage_location: data.get('storage_location') as string,
+                quantity: parseFloat(data.get('quantity') as string) || 0,
+                unit: data.get('unit') as string,
+                purchase_date: data.get('purchase_date') as string,
+                restock_flag: false,
+                brand: data.get('brand') as string || '',
+                notes: data.get('notes') as string || '',
+                expiry_date: data.get('expiry_date') as string || ''
+              };
+              await createItem(payload);
+              setShowForm(false);
+            }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Name</label>
+                <Input name="item_name" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Category</label>
+                <Input name="category" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Location</label>
+                <Input name="storage_location" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Unit</label>
+                <Input name="unit" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Quantity</label>
+                <Input name="quantity" type="number" step="any" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Purchase Date</label>
+                <Input name="purchase_date" type="date" required />
+              </div>
+            </div>
+            <div className="mt-4 flex space-x-2">
+              <Button type="submit" size="sm">Save</Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
       
       {/* Search and filter bar */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">

@@ -1,5 +1,6 @@
 // src/react-app/components/inventory/InventoryTable.tsx
 import { useState, useMemo } from 'react';
+import { useInventoryOperations } from '@/react-app/hooks/useInventory';
 import { Link } from 'react-router-dom';
 import { InventoryItem } from '@/types/api';
 import { Badge } from '@/react-app/components/ui/badge';
@@ -61,12 +62,52 @@ export function InventoryTable({ items }: InventoryTableProps) {
     <ArrowUpDown className={`ml-1 h-3 w-3 inline-block ${sortField === field ? 'opacity-100' : 'opacity-30'}`} />
   );
 
+  // Selection state for batch deletion
+  const { batchDeleteItems, isLoading: isDeleting } = useInventoryOperations();
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const allIds = sortedItems.map(item => item.id);
+  const isAllSelected = allIds.length > 0 && allIds.every(id => selectedIds.has(id));
+  const toggleSelectAll = () => {
+    if (isAllSelected) setSelectedIds(new Set());
+    else setSelectedIds(new Set(allIds));
+  };
+  const toggleSelect = (id: number) => {
+    const newSet = new Set(selectedIds);
+    if (newSet.has(id)) newSet.delete(id);
+    else newSet.add(id);
+    setSelectedIds(newSet);
+  };
+  const handleDeleteSelected = async () => {
+    await batchDeleteItems(Array.from(selectedIds));
+    setSelectedIds(new Set());
+  };
+
   return (
-    <div className="rounded-md border overflow-hidden">
+    <>
+      <div className="mb-2 flex justify-between items-center">
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={handleDeleteSelected}
+          disabled={selectedIds.size === 0 || isDeleting}
+        >
+          Delete Selected
+        </Button>
+        <div>{selectedIds.size} selected</div>
+      </div>
+      <div className="rounded-md border overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-muted/50">
             <tr className="text-left font-medium text-sm">
+              <th className="p-3">
+                <input
+                  type="checkbox"
+                  checked={isAllSelected}
+                  onChange={toggleSelectAll}
+                  className="form-checkbox"
+                />
+              </th>
               <th 
                 className="p-3 cursor-pointer hover:bg-muted" 
                 onClick={() => handleSort('item_name')}
@@ -103,6 +144,14 @@ export function InventoryTable({ items }: InventoryTableProps) {
           <tbody>
             {sortedItems.map((item) => (
               <tr key={item.id} className="border-t hover:bg-muted/50">
+                <td className="p-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(item.id)}
+                    onChange={() => toggleSelect(item.id)}
+                    className="form-checkbox"
+                  />
+                </td>
                 <td className="p-3">
                   <div className="font-medium">{item.item_name}</div>
                   {item.brand && <div className="text-xs text-muted-foreground">{item.brand}</div>}
@@ -152,5 +201,6 @@ export function InventoryTable({ items }: InventoryTableProps) {
         </table>
       </div>
     </div>
+    </>
   );
 }
