@@ -9,6 +9,7 @@ This repository implements a full-stack application deployed to Cloudflare Worke
   - D1 (SQLite)
   - R2
   - Browser Rendering
+- Always prefer modular and reusable code, unless the implementation is simple.
 
 ---
 

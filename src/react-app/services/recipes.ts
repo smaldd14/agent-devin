@@ -79,3 +79,15 @@ export async function generateRecipes(
     body: JSON.stringify(params),
   });
 }
+
+/**
+ * Scrape a recipe draft from a URL and format as CreateRecipeRequest
+ */
+export async function scrapeRecipe(
+  url: string
+): Promise<ApiResponse<CreateRecipeRequest>> {
+  return fetchApi<CreateRecipeRequest>(`${RECIPES_ENDPOINT}/scrape`, {
+    method: 'POST',
+    body: JSON.stringify({ url }),
+  });
+}

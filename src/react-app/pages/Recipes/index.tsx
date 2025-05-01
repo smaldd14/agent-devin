@@ -48,9 +48,9 @@ export default function RecipesPage() {
           <BookOpen className="h-4 w-4 mr-2" />
           Generate Recipes
         </Button>
-        <Button size="sm">
+        <Button size="sm" onClick={() => navigate('/recipes/import')}>
           <PlusCircle className="h-4 w-4 mr-2" />
-          New Recipe
+          Import Recipe
         </Button>
       </PageHeader>
 

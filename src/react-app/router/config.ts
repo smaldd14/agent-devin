@@ -1,5 +1,6 @@
 import HomePage from '@pages/Home';
 import RecipesPage from '@pages/Recipes';
+import ImportRecipePage from '@pages/Recipes/Import';
 import RecipeDetailPage from '@pages/Recipes/RecipeDetail';
 import InventoryPage from '@pages/Inventory';
 import InventoryDetailPage from '@pages/Inventory/InventoryDetail';
@@ -28,6 +29,11 @@ const routes: RoutesConfig = [
     path: "/recipes",
     key: "Recipes",
     component: RecipesPage,
+  },
+  {
+    path: "/recipes/import",
+    key: "ImportRecipe",
+    component: ImportRecipePage,
   },
   {
     path: "/recipes/generate",

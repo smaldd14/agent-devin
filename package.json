@@ -6,6 +6,7 @@
     "build": "tsc -b && vite build",
     "deploy": "npm run build && wrangler deploy",
     "dev": "vite",
+    "dev:worker": "wrangler dev --remote",
     "lint": "eslint .",
     "preview": "npm run build && vite preview",
     "types": "wrangler types",
@@ -24,6 +25,7 @@
     "dash": true
   },
   "dependencies": {
+    "@cloudflare/puppeteer": "^1.0.2",
     "@hono/zod-validator": "^0.4.3",
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/react-tooltip": "^1.2.0",

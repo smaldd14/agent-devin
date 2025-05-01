@@ -16,4 +16,13 @@ export default defineConfig({
       "@hooks": path.resolve(__dirname, "./src/react-app/hooks"),
     },
   },
+  // Proxy /api requests to the Cloudflare Worker dev server
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+      },
+    },
+  },
 });

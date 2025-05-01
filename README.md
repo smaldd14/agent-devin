@@ -47,13 +47,25 @@ Install dependencies:
 npm install
 ```
 
-Start the development server with:
+Start the development server for the React client with:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at [http://localhost:5173](http://localhost:5173).
+Your client app will be available at http://localhost:5173.
+
+### Running the Cloudflare Worker (Browser Rendering)
+
+The scraping feature uses Cloudflare Browser Rendering, which requires the Worker to run on Cloudflare's infrastructure. Miniflare (used by `vite` dev) does not support Browser Rendering bindings.
+
+In a separate terminal, start the Worker in remote mode:
+
+```bash
+npm run dev:worker
+```
+
+This will start your Worker with the `BROWSER` binding and expose `/api` endpoints (e.g. `POST /api/recipes/scrape`).
 
 ## Production
 

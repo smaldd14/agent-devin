@@ -1,7 +1,6 @@
 import { Context as HonoContext } from 'hono';
 import { z } from 'zod';
-import OpenAI from 'openai';
-import { zodTextFormat } from 'openai/helpers/zod';
+import { callLLM } from '../utils/llm';
 import recipeTemplate from '../prompts/recipe-generator.txt';
 import { success, error } from '../utils/response';
 import type { AppType } from '../index';
@@ -74,26 +73,13 @@ export async function generateRecipe(c: Context): Promise<Response> {
       .replace('{preferences}', preferencesString)
       .replace('{max_recipes}', String(data.max_recipes));
 
-    // Initialize OpenAI client and call the structured Responses API
-    const openai = new OpenAI({ apiKey: c.env.OPENAI_API_KEY });
-    const response = await openai.responses.parse({
-      model: 'gpt-4o-2024-08-06',
-      input: [
-        { role: 'system', content: prompt }
-      ],
-      text: {
-        format: zodTextFormat(generateRecipeResponseSchema, "recipe_response"),
-      },
-    });
-
-    // The parsed JSON will be available under `output_parsed`
-    const parsed = (response as any).output_parsed;
-    if (!parsed) {
-      console.error('No parsed JSON returned by Responses API:', response);
-      return error(c, 'Failed to retrieve structured JSON from AI');
-    }
-
-    // Return structured JSON with recipes and shopping_list
+    // Call LLM to get structured recipe response
+    const parsed = await callLLM(
+      c.env.OPENAI_API_KEY,
+      prompt,
+      generateRecipeResponseSchema,
+      'recipe_response'
+    );
     return success(c, parsed);
   } catch (err) {
     console.error('Error generating recipes:', err);

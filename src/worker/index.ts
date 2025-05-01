@@ -1,13 +1,17 @@
 import { Hono } from 'hono';
+import type { BrowserWorker } from '@cloudflare/puppeteer';
 import { cors } from 'hono/cors';
 import { errorHandler } from './middleware/error-handler';
 import { setupRoutes } from './routes';
 
 // Define the environment interface
+// Define the Worker environment bindings
 interface Env {
   DB: D1Database;
   // API key for AI LLM
   OPENAI_API_KEY: string;
+  // Browser Rendering service binding
+  BROWSER: BrowserWorker;
 }
 
 // Create a new Hono app with proper typing

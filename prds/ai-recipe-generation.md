@@ -40,7 +40,7 @@ Home cooks and meal planners who wish to reduce food waste, explore new recipes,
 #### Requirement 1: Recipe Generation Endpoint
 - **Description:** Create `POST /api/recipes/generate` that accepts user preferences (`max_recipes`, dietary constraints, cuisine style) and reads inventory from D1.
 - **Acceptance Criteria:**
-  - [ ] Endpoint invokes LLM with `recipe-generator.txt` prompt, injecting inventory and preferences.
+  - [x] Endpoint invokes LLM with `recipe-generator.txt` prompt, injecting inventory and preferences.
   - [ ] Returns JSON with `recipes: Recipe[]` and `shopping_list: string[]`.
   - [ ] Handles LLM errors and timeouts gracefully with HTTP 5xx and error message.
 
