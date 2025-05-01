@@ -23,7 +23,7 @@ export const createRecipeSchema = z.object({
   ingredients: z.array(z.object({
     ingredient_name: z.string().min(1, 'Ingredient name is required'),
     quantity: z.number().positive('Quantity must be positive'),
-    unit: z.string().min(1, 'Unit is required'),
+    unit: z.string().min(0.001, 'Unit is required'),
     is_protein: z.boolean().default(false)
   })).min(1, 'At least one ingredient is required')
 });
