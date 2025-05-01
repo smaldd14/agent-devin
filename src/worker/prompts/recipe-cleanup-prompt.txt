@@ -1,0 +1,47 @@
+You are given a scraped recipe draft as JSON. The draft has the following structure:
+
+```json
+{
+  "title": string,
+  "ingredients": [{ "ingredient_name": string }],
+  "instructions": [string],
+  "prep_time": string,
+  "cook_time": string,
+  "total_time": string,
+  "serving_size": string,
+  "nutrition": { [key: string]: string },
+  "images": [string]
+}
+```
+
+Your task is to transform this draft into a JSON object matching the CreateRecipeRequest type:
+
+```json
+{
+  "name": string,
+  "instructions": string,           // all instructions joined by "\n"
+  "cooking_time": number | null,   // total_time or cook_time parsed to minutes
+  "difficulty": string,            // take your best guess of easy, medium or hard
+  "ingredients": [
+    {
+      "ingredient_name": string,   // name only, no quantity/unit
+      "quantity": number,          // parsed from ingredient_name, 1 if unknown
+      "unit": string,              // parsed unit, take your best guess based on the ingredient
+      "is_protein": boolean        // true if protein (e.g. chicken, beef, tofu, seafood), else false
+    },
+    ...
+  ]
+}
+```
+
+Guidelines:
+- Use `title` for the `name` field.
+- For `cooking_time`, parse the largest time value available (`total_time` preferred, else `cook_time`). If you cannot parse a number, set to `null`.
+- Join the `instructions` array into a single string separated by `"\n"`.
+- For each ingredient in `ingredients`:
+  - Attempt to extract numeric quantity and unit from the original `ingredient_name` string.
+  - If no clear quantity or unit, default `quantity` to `1` and `unit` take your best guess based on the ingredient.
+  - Clean the `ingredient_name` text to remove parsed quantity and unit, as well as irrelevant symbols like `:`.
+  - Set `is_protein` based on whether the ingredient is a common protein source (e.g., chicken, beef, pork, fish, tofu, etc.).
+- Do not include `nutrition` or `images` in the output.
+- Return **only** the final JSON object (no extra text or markdown).

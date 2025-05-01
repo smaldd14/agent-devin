@@ -101,7 +101,21 @@ export interface ApiResponse<T> {
     shopping_list: string[];
   }
   
-  // Response types
+// Scraped recipe draft returned by /api/recipes/scrape
+export interface RecipeDraft {
+  title: string;
+  ingredients: { ingredient_name: string }[];
+  instructions: string[];
+  prep_time: string;
+  cook_time: string;
+  total_time: string;
+  serving_size: string;
+  nutrition: Record<string, string>;
+  images: string[];
+}
+export type RecipeDraftResponse = ApiResponse<RecipeDraft>;
+  
+// Response types
   export type RecipeResponse = ApiResponse<Recipe>;
   export type RecipesResponse = ApiResponse<Recipe[]>;
   export type InventoryItemResponse = ApiResponse<InventoryItem>;
