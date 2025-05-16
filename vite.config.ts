@@ -14,6 +14,7 @@ export default defineConfig({
       "@lib": path.resolve(__dirname, "./src/react-app/lib"),
       "@pages": path.resolve(__dirname, "./src/react-app/pages"),
       "@hooks": path.resolve(__dirname, "./src/react-app/hooks"),
+      "@services": path.resolve(__dirname, "./src/react-app/services"),
     },
   },
   // Proxy /api requests to the Cloudflare Worker dev server

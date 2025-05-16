@@ -10,6 +10,8 @@ This repository implements a full-stack application deployed to Cloudflare Worke
   - R2
   - Browser Rendering
 - Always prefer modular and reusable code, unless the implementation is simple.
+- Use comments when writing code, especially when the code is complex or not self-explanatory. Do not go overboard.
+- Use console print statements where you think it makes sense. Do not go overboard.
 
 ---
 
@@ -103,30 +105,6 @@ The front-end communicates with the Hono API using REST endpoints under a shared
   ```bash
   npx wrangler secret put SECRET_NAME
   ```
-
-## API Routes
-
-- **Health Check**  
-  - GET `/api` - Returns `{ name, version, status }`  
-
-- **Recipes** (`/api/recipes`)  
-  - GET `/api/recipes` - List all recipes (no ingredients)  
-  - GET `/api/recipes/:id` - Get recipe details with ingredients  
-  - POST `/api/recipes` - Create a recipe (body: `createRecipeSchema`)  
-  - POST `/api/recipes/generate` - Generate recipes via AI (body: `generateRecipeSchema`)  
-
-- **Inventory** (`/api/inventory`)  
-  - GET `/api/inventory` - List all inventory items  
-  - GET `/api/inventory/:id` - Get single inventory item  
-  - POST `/api/inventory` - Create an item (body: `createItemSchema`)  
-  - POST `/api/inventory/batch` - Batch create items (body: `batchCreateItemsSchema`)  
-  - PUT `/api/inventory/:id` - Update an item (partial fields)  
-
-- **Shopping Lists** (`/api/shopping-lists`)  
-  - GET `/api/shopping-lists` - List shopping lists with items  
-  - GET `/api/shopping-lists/:id` - Get a specific shopping list with items  
-  - POST `/api/shopping-lists` - Create a list (body: `createListSchema`)  
-  - POST `/api/shopping-lists/:id/items` - Add item to list (body: `addListItemSchema`)  
 
 ## Database Migrations
 

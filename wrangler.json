@@ -27,7 +27,15 @@
   // Browser Rendering binding for headless scraping
   "browser": {
     "binding": "BROWSER"
-  }
+  },
+  // KV namespace for caching scraped recipes
+  "kv_namespaces": [
+    {
+      "binding": "RECIPE_SWIPE_CACHE",
+      "id": "ffa0b974d05e481b9c87dc66f20ac9ac",
+	  "preview_id": "425e21ea2873436ea54144f0569f5904"
+    }
+  ],
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
