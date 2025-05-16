@@ -12,10 +12,18 @@ import {
 } from '../controllers/shopping-lists';
 
 import { AppType } from '../index';
+import { generateShoppingList } from '../controllers/shopping-lists-generate';
+import { GenerateShoppingListRequestSchema } from '../schemas/ShoppingListSchema';
 
 const routes = new Hono<AppType>();
 
 routes.get('/', getAllLists);
+// Generate shopping list for a recipe
+routes.post(
+  '/generate',
+  zValidator('json', GenerateShoppingListRequestSchema),
+  generateShoppingList
+);
 routes.get('/:id', getListById);
 routes.post('/', zValidator('json', createListSchema), createList);
 routes.post('/:id/items', zValidator('json', addListItemSchema), addListItem);
