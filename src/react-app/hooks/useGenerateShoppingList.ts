@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { fetchApi } from '@services/api';
-import type { ShoppingListItem, GenerateShoppingListResponse } from '@types/shopping-list';
+import type { ShoppingListItem, GenerateShoppingListResponse } from '@/types/shopping-list';
 
 /**
  * Hook to generate a shopping list for a given recipe via backend API.
