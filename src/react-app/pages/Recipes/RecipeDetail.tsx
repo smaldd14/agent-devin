@@ -1,8 +1,10 @@
 // src/react-app/pages/Recipes/RecipeDetail.tsx
 import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useRecipe } from '@/react-app/hooks/useRecipes';
 import { RecipeDetail } from '@/react-app/components/recipes/RecipeDetail';
+import { GenerateShoppingListDrawer } from '@components/GenerateShoppingListDrawer';
 import { PageHeader } from '@/react-app/components/layout/PageHeader';
 import { Button } from '@/react-app/components/ui/button';
 import { Skeleton } from '@/react-app/components/ui/skeleton';
@@ -12,6 +14,7 @@ export default function RecipeDetailPage() {
   const { id } = useParams<{ id: string }>();
   const recipeId = id ? parseInt(id, 10) : null;
   const { recipe, isLoading, error, refetch } = useRecipe(recipeId);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Loading skeleton for recipe detail
   const LoadingSkeleton = () => (
@@ -64,7 +67,7 @@ export default function RecipeDetailPage() {
 
       {!isLoading && !error && recipe && (
         <>
-          <PageHeader 
+          <PageHeader
             title={recipe.name}
             description={
               <>
@@ -77,7 +80,18 @@ export default function RecipeDetailPage() {
               </>
             }
           />
-          <RecipeDetail recipe={recipe} />
+          {/* Recipe details and shopping list trigger */}
+          <div className="space-y-6">
+            <RecipeDetail recipe={recipe} />
+            <Button onClick={() => setDrawerOpen(true)} className="w-full">
+              Generate Shopping List
+            </Button>
+            <GenerateShoppingListDrawer
+              isOpen={drawerOpen}
+              onClose={() => setDrawerOpen(false)}
+              recipeId={recipe.id}
+            />
+          </div>
         </>
       )}
     </div>
