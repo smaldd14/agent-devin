@@ -1,33 +1,43 @@
-import puppeteer from '@cloudflare/puppeteer';
+import puppeteer, { type Browser } from '@cloudflare/puppeteer';
 import type { RecipeDraft } from '@/types/api';
 
 /**
- * Launch a headless browser via Cloudflare Browser Rendering binding,
- * navigate to the given URL, and extract raw recipe data.
+ * Cached Browser instance promise, so we only launch once per Worker.
+ */
+let browserPromise: Promise<Browser> | null = null;
+function getBrowser(binding: any) {
+  if (!browserPromise) browserPromise = puppeteer.launch(binding);
+  return browserPromise;
+}
+
+/**
+ * Launch a headless browser page, navigate to the given URL,
+ * and extract raw recipe data, reusing the browser instance.
  */
 export async function scrapeRecipeWithBrowser(
   binding: any,
   url: string
 ): Promise<RecipeDraft> {
-  const browser = await puppeteer.launch(binding);
+  const browser = await getBrowser(binding);
   const page = await browser.newPage();
-  // Increase default timeouts for slow pages
-  page.setDefaultNavigationTimeout(60000);
-  page.setDefaultTimeout(60000);
-  // Block images, fonts, stylesheets, media to speed up load
-  await page.setRequestInterception(true);
-  page.on('request', (req) => {
-    const type = req.resourceType();
-    if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
-      req.abort();
-    } else {
-      req.continue();
-    }
-  });
-  // Navigate and wait for network to be idle
-  await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-  // Extract structured data in page context
-  const recipeDraft = (await page.evaluate(() => {
+  try {
+    // Increase default timeouts for slow pages
+    page.setDefaultNavigationTimeout(60000);
+    page.setDefaultTimeout(60000);
+    // Block images, fonts, stylesheets, media to speed up load
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const type = req.resourceType();
+      if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
+    // Navigate and wait for network to be idle
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+    // Extract structured data in page context
+    const recipeDraft = (await page.evaluate(() => {
     const getMeta = (selector: string, attr: string) => {
       const el = document.querySelector(selector);
       return el?.getAttribute(attr) || '';
@@ -125,8 +135,10 @@ export async function scrapeRecipeWithBrowser(
       nutrition,
       images,
     };
-  })) as RecipeDraft;
-  // Disconnect to release resources
-  browser.disconnect();
-  return recipeDraft;
+    })) as RecipeDraft;
+    return recipeDraft;
+  } finally {
+    // Always close the page to free resources; keep browser instance alive for reuse
+    await page.close();
+  }
 }

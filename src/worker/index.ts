@@ -12,6 +12,10 @@ interface Env {
   OPENAI_API_KEY: string;
   // Browser Rendering service binding
   BROWSER: BrowserWorker;
+  // KV namespace for caching scraped recipe data and session queues
+  RECIPE_SWIPE_CACHE: KVNamespace;
+  // API key for Brave Search
+  BRAVE_API_KEY: string;
 }
 
 // Create a new Hono app with proper typing

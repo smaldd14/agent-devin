@@ -2,8 +2,8 @@ import { Context as HonoContext } from 'hono';
 import { z } from 'zod';
 import { success, error } from '../utils/response';
 import { Recipe, RecipeIngredient } from '@/types/api';
+import { insertRecipeAndIngredients } from '../utils/recipe-service';
 import { AppType } from '../index';
-
 // Define typed context
 type Context = HonoContext<AppType>;
 
@@ -25,7 +25,8 @@ export const createRecipeSchema = z.object({
     quantity: z.number().positive('Quantity must be positive'),
     unit: z.string().min(0.001, 'Unit is required'),
     is_protein: z.boolean().default(false)
-  })).min(1, 'At least one ingredient is required')
+  })).min(1, 'At least one ingredient is required'),
+  url: z.string().url().optional(),
 });
 
 export type CreateRecipeRequest = z.infer<typeof createRecipeSchema>;
@@ -84,35 +85,13 @@ export async function getRecipeById(c: Context): Promise<Response> {
 export async function createRecipe(c: Context): Promise<Response> {
   try {
     const data = (c.req as any).valid('json') as CreateRecipeRequest;
-    
-    // Start a transaction for creating recipe and ingredients
-    const recipeStmt = c.env.DB.prepare(
-      'INSERT INTO recipes (name, instructions, cooking_time, difficulty) VALUES (?, ?, ?, ?)'
-    ).bind(data.name, data.instructions, data.cooking_time || null, data.difficulty || null);
-    
-    const result = await c.env.DB.batch([recipeStmt]);
-    const recipeId = result[0].meta.last_row_id;
-    
-    // Insert ingredients
-    const ingredientStmts = data.ingredients.map((ingredient) => {
-      return c.env.DB.prepare(
-        'INSERT INTO recipe_ingredients (recipe_id, ingredient_name, quantity, unit, is_protein) VALUES (?, ?, ?, ?, ?)'
-      ).bind(
-        recipeId, 
-        ingredient.ingredient_name, 
-        ingredient.quantity, 
-        ingredient.unit, 
-        ingredient.is_protein ? 1 : 0
-      );
-    });
-    
-    await c.env.DB.batch(ingredientStmts);
-    
+    // Insert recipe and its ingredients
+    const recipeId = await insertRecipeAndIngredients(c.env.DB, data);
     // Fetch the newly created recipe
-    const recipe = await c.env.DB.prepare(
-      'SELECT * FROM recipes WHERE id = ?'
-    ).bind(recipeId).first() as RawRecipe;
-    
+    const recipe = (await c.env.DB
+      .prepare('SELECT * FROM recipes WHERE id = ?')
+      .bind(recipeId)
+      .first()) as RawRecipe;
     return success(c, recipe, 201);
   } catch (err) {
     console.error('Error creating recipe:', err);

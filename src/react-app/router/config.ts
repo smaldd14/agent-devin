@@ -4,6 +4,7 @@ import ImportRecipePage from '@pages/Recipes/Import';
 import RecipeDetailPage from '@pages/Recipes/RecipeDetail';
 import InventoryPage from '@pages/Inventory';
 import InventoryDetailPage from '@pages/Inventory/InventoryDetail';
+import SwipePage from '@pages/Swipe';
 import GenerateRecipesPage from '@pages/GenerateRecipes';
 import { ComponentType } from 'react';
 
@@ -54,6 +55,11 @@ const routes: RoutesConfig = [
     path: "/inventory/:id",
     key: "InventoryDetail",
     component: InventoryDetailPage,
+  },
+  {
+    path: "/explore",
+    key: "Swipe",
+    component: SwipePage,
   },
 ];
 

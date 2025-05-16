@@ -31,6 +31,7 @@
       "@lib/*": ["./src/react-app/lib/*"],
       "@hooks/*": ["./src/react-app/hooks/*"],
       "@pages/*": ["./src/react-app/pages/*"],
+      "@services/*": ["./src/react-app/services/*"]
     }
   },
   "include": ["src/react-app", "src/lib", "src/types"]
