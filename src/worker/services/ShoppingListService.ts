@@ -16,22 +16,21 @@ export class ShoppingListService {
   ) {}
 
   /**
-   * Generate a shopping list for a given recipe ID.
-   * @returns the shoppingListId and missing items
+   * Generate a shopping list for one or more recipe IDs via LLM.
+   * @param recipeIds array of recipe IDs
    */
   async generate(
-    recipeId: number
+    recipeIds: number[]
   ): Promise<{ items: MissingItem[] }> {
-    // Fetch recipe details
-    const recipe = await this.recipeRepo.getRecipeWithIngredients(recipeId);
-    if (!recipe) {
-      throw new NotFoundError(`Recipe ${recipeId} not found`);
+    // Fetch details for all recipes
+    const recipes = await this.recipeRepo.getRecipesWithIngredients(recipeIds);
+    if (recipes.length === 0) {
+      throw new NotFoundError(`No recipes found for IDs: ${recipeIds.join(',')}`);
     }
     // Fetch inventory
     const inventory = await this.inventoryRepo.getAllInventoryItems();
-    // Build prompt
-    const prompt = PromptBuilder.build(recipe, inventory);
-    console.log('Prompt:', prompt);
+    // Build combined prompt for multiple recipes
+    const prompt = PromptBuilder.build(recipes, inventory);
     // Compute missing items via LLM
     const missingItemsObj = await this.llmService.computeMissingItems(prompt);
     // Persist shopping list

@@ -6,6 +6,7 @@ import InventoryPage from '@pages/Inventory';
 import InventoryDetailPage from '@pages/Inventory/InventoryDetail';
 import SwipePage from '@pages/Swipe';
 import GenerateRecipesPage from '@pages/GenerateRecipes';
+import MealPlanPage from '@pages/MealPlan';
 import { ComponentType } from 'react';
 
 export type RouteType = {
@@ -60,6 +61,11 @@ const routes: RoutesConfig = [
     path: "/explore",
     key: "Swipe",
     component: SwipePage,
+  },
+  {
+    path: "/plan",
+    key: "MealPlan",
+    component: MealPlanPage,
   },
 ];
 

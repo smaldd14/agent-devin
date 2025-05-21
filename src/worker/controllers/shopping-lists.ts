@@ -8,15 +8,25 @@ import { ShoppingList, ShoppingListItem } from '@/types/api';
 type Context = HonoContext<AppType>;
 
 // Validation schemas
+// Schema for creating a new shopping list with optional batch items
 export const createListSchema = z.object({
-  amazon_link: z.string().optional()
+  items: z.array(
+    z.object({
+      item_name: z.string().min(1, 'Item name is required'),
+      quantity: z.number().optional(),
+      unit: z.string().optional(),
+      category: z.string().optional(),
+      brand: z.string().optional(),
+    })
+  ).optional(),
 });
 
 export const addListItemSchema = z.object({
   item_name: z.string().min(1, 'Item name is required'),
   quantity: z.number().optional(),
   unit: z.string().optional(),
-  category: z.string().optional()
+  category: z.string().optional(),
+  brand: z.string().optional()
 });
 
 // Controllers
@@ -80,22 +90,41 @@ export async function getListById(c: Context): Promise<Response> {
 
 export async function createList(c: Context): Promise<Response> {
   try {
-    const data = c.get('json') as z.infer<typeof createListSchema>;
-    
-    const result = await c.env.DB.prepare(
-      'INSERT INTO shopping_lists (amazon_link) VALUES (?)'
-    ).bind(data.amazon_link || null).run();
-    
-    const listId = result.meta.last_row_id;
-    
-    const list = await c.env.DB.prepare(
+    // Parse payload
+    const data = (c.req as any).valid('json') as z.infer<typeof createListSchema>;
+    // Create the shopping list
+    const insertList = await c.env.DB.prepare(
+      'INSERT INTO shopping_lists DEFAULT VALUES'
+    ).run();
+    const listId = insertList.meta.last_row_id;
+    // If batch items provided, insert them
+    if (data.items && data.items.length > 0) {
+      const stmt = await c.env.DB.prepare(
+        `INSERT INTO shopping_list_items (
+          shopping_list_id, item_name, quantity, unit, category, brand
+        ) VALUES (?, ?, ?, ?, ?, ?)`
+      );
+      for (const item of data.items) {
+        await stmt.bind(
+          listId,
+          item.item_name,
+          item.quantity || null,
+          item.unit || null,
+          item.category || null,
+          item.brand || null
+        ).run();
+      }
+    }
+    // Fetch the created list
+    const list = (await c.env.DB.prepare(
       'SELECT * FROM shopping_lists WHERE id = ?'
-    ).bind(listId).first() as ShoppingList | null;
-    
-    return success(c, {
-      ...list,
-      items: []
-    }, 201);
+    ).bind(listId).first()) as ShoppingList;
+    // Fetch its items
+    const { results: items } = await c.env.DB.prepare(
+      'SELECT * FROM shopping_list_items WHERE shopping_list_id = ?'
+    ).bind(listId).all();
+    const typedItems = items as unknown as ShoppingListItem[];
+    return success(c, { ...list, items: typedItems }, 201);
   } catch (err) {
     console.error('Error creating shopping list:', err);
     return error(c, 'Failed to create shopping list');
@@ -116,16 +145,17 @@ export async function addListItem(c: Context): Promise<Response> {
       return error(c, 'Shopping list not found', 404);
     }
     
-    const result = await c.env.DB.prepare(`
-      INSERT INTO shopping_list_items (
-        shopping_list_id, item_name, quantity, unit, category
-      ) VALUES (?, ?, ?, ?, ?)
-    `).bind(
+    const result = await c.env.DB.prepare(
+      `INSERT INTO shopping_list_items (
+        shopping_list_id, item_name, quantity, unit, category, brand
+      ) VALUES (?, ?, ?, ?, ?, ?)`
+    ).bind(
       listId,
       data.item_name,
       data.quantity || null,
       data.unit || null,
-      data.category || null
+      data.category || null,
+      data.brand || null
     ).run();
     
     const itemId = result.meta.last_row_id;

@@ -1,50 +1,40 @@
 import { useEffect, useState } from 'react';
-import { useGenerateShoppingList } from '@hooks/useGenerateShoppingList';
 import type { ShoppingListItem } from '@/types/shopping-list';
 import { AmazonFreshLinkGenerator } from '@lib/AmazonFreshLink';
 import { ShoppingListDrawer } from '@components/ShoppingListDrawer';
 import { toast } from 'sonner';
 import { createShoppingListWithItems } from '@services/shopping-lists';
 
-interface GenerateShoppingListDrawerProps {
-  /** Controls drawer visibility */
+interface AggregatedShoppingListDrawerProps {
   isOpen: boolean;
-  /** Callback when drawer should close */
   onClose: () => void;
-  /** Recipe identifier to generate list for */
-  recipeId: number;
+  initialItems: ShoppingListItem[];
 }
 
 /**
- * Drawer component to generate and edit a shopping list from a recipe.
+ * Drawer to review & edit an aggregated shopping list.
  */
-export function GenerateShoppingListDrawer({
+export function AggregatedShoppingListDrawer({
   isOpen,
   onClose,
-  recipeId,
-}: GenerateShoppingListDrawerProps) {
-  const { generate, data, loading, error } = useGenerateShoppingList();
+  initialItems,
+}: AggregatedShoppingListDrawerProps) {
   const [items, setItems] = useState<ShoppingListItem[]>([]);
   const [saveLoading, setSaveLoading] = useState(false);
 
+  // Initialize items when opening
   useEffect(() => {
     if (isOpen) {
-      generate([recipeId]);
+      setItems(initialItems);
     }
-  }, [isOpen, generate, recipeId]);
-
-  useEffect(() => {
-    if (data) {
-      setItems(data);
-    }
-  }, [data]);
+  }, [isOpen, initialItems]);
 
   const handleGenerateLink = () => {
     const generator = new AmazonFreshLinkGenerator();
     const url = generator.generateLink({ items });
     window.open(url, '_blank');
   };
-  
+
   const handleSaveList = async () => {
     setSaveLoading(true);
     try {
@@ -69,19 +59,15 @@ export function GenerateShoppingListDrawer({
     <ShoppingListDrawer
       isOpen={isOpen}
       onClose={onClose}
-      title="Generate Shopping List"
+      title="Shopping List"
       description="Review and edit your shopping items"
       items={items}
       onItemsChange={setItems}
-      loading={loading}
-      loadingText="Generating shopping list..."
-      error={error || undefined}
-      onRetry={() => generate([recipeId])}
       actions={[
         {
           label: 'Generate Amazon Fresh Link',
           onClick: handleGenerateLink,
-          disabled: loading || !!error,
+          disabled: items.length === 0,
         },
         {
           label: saveLoading ? 'Saving...' : 'Save Shopping List',

@@ -20,7 +20,7 @@ export class LLMService {
         prompt,
         MissingItemsArraySchema,
         'MissingItemsArray',
-        'o4-mini'
+        'gpt-4.1-nano'
       );
       return items;
     } catch (err: any) {

@@ -1,6 +1,6 @@
 // src/react-app/components/layout/Navigation.tsx
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, Package } from 'lucide-react';
+import { Home, BookOpen, Package, Calendar } from 'lucide-react';
 import { cn } from '@/react-app/lib/utils';
 
 interface NavItem {
@@ -24,6 +24,11 @@ const navItems: NavItem[] = [
     title: 'Inventory',
     href: '/inventory',
     icon: Package,
+  },
+  {
+    title: 'Plan',
+    href: '/plan',
+    icon: Calendar,
   },
 ];
 
