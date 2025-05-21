@@ -90,17 +90,25 @@ export default function InventoryPage() {
                 <label className="block text-sm font-medium mb-1">Location</label>
                 <Input name="storage_location" required />
               </div>
+              {/* 
+                Optional fields: quantity, unit, and purchase_date.
+                These are not marked as `required` in the form because the backend
+                is configured to apply sensible default values if they are left blank.
+                - Quantity defaults to 1.
+                - Unit defaults to 'unit'.
+                - Purchase Date defaults to the current date.
+              */}
               <div>
-                <label className="block text-sm font-medium mb-1">Unit</label>
-                <Input name="unit" required />
+                <label className="block text-sm font-medium mb-1">Unit (optional, defaults to 'unit')</label>
+                <Input name="unit" placeholder="e.g., kg, pcs, liter" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Quantity</label>
-                <Input name="quantity" type="number" step="any" required />
+                <label className="block text-sm font-medium mb-1">Quantity (optional, defaults to 1)</label>
+                <Input name="quantity" type="number" step="any" placeholder="Enter quantity" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Purchase Date</label>
-                <Input name="purchase_date" type="date" required />
+                <label className="block text-sm font-medium mb-1">Purchase Date (optional, defaults to today)</label>
+                <Input name="purchase_date" type="date" />
               </div>
             </div>
             <div className="mt-4 flex space-x-2">

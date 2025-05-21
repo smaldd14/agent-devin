@@ -21,11 +21,14 @@ export const createItemSchema = z.object({
   item_description: z.string().optional(),
   brand: z.string().optional(),
   storage_location: z.string().min(1, 'Storage location is required'),
-  quantity: z.number().positive('Quantity must be positive'),
-  unit: z.string().min(1, 'Unit is required'),
+  // Optional: Allows 0, negative, or undefined. Controller defaults to 1 if undefined, null, or <= 0.
+  quantity: z.number().optional(),
+  // Optional: Allows empty string or undefined. Controller defaults to 'unit' if undefined, null, or empty.
+  unit: z.string().optional(),
   minimum_quantity: z.number().optional(),
   expiry_date: z.string().optional(),
-  purchase_date: z.string().min(1, 'Purchase date is required'),
+  // Optional: Allows empty string or undefined. Controller defaults to current date if undefined, null, or empty.
+  purchase_date: z.string().optional(),
   unit_price: z.number().optional(),
   notes: z.string().optional(),
   restock_flag: z.boolean().default(false)
@@ -96,6 +99,20 @@ export async function createItem(c: Context): Promise<Response> {
     // Retrieve validated request body (JSON) via zod-validator
     const data = (c.req as any).valid('json') as CreateItemRequest;
     console.log('Creating inventory item with data:', data);
+
+    // Apply default values for optional fields or specific user inputs.
+    // This ensures that if a user omits these fields or provides values
+    // that are considered "empty" (e.g., 0 for quantity, "" for unit/date),
+    // sensible defaults are applied before database insertion.
+    if (data.quantity === undefined || data.quantity === null || data.quantity <= 0) {
+      data.quantity = 1;
+    }
+    if (data.unit === undefined || data.unit === null || data.unit === '') {
+      data.unit = 'unit';
+    }
+    if (data.purchase_date === undefined || data.purchase_date === null || data.purchase_date === '') {
+      data.purchase_date = new Date().toISOString().split('T')[0];
+    }
     
     const result = await c.env.DB.prepare(`
       INSERT INTO inventory_items (
