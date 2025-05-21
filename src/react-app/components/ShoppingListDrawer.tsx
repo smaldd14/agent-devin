@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import type { ComponentProps } from 'react';
 import type { ShoppingListItem } from '@/types/shopping-list';
 import {
