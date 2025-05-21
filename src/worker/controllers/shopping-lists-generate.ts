@@ -26,7 +26,7 @@ type Context = HonoContext<AppType>;
  */
 export async function generateShoppingList(c: Context): Promise<Response> {
   try {
-    const { recipeId } = (c.req as any).valid('json') as z.infer<
+    const { recipeIds } = (c.req as any).valid('json') as z.infer<
       typeof GenerateShoppingListRequestSchema
     >;
     // Validate environment
@@ -41,9 +41,9 @@ export async function generateShoppingList(c: Context): Promise<Response> {
       inventoryRepo,
       llmService
     );
-    // Generate shopping list
+    // Generate shopping list for one or more recipes
     const { items } = await shoppingListService.generate(
-      recipeId
+      recipeIds
     );
     // Respond with generated items (shared ShoppingListItem type)
     return success(c, { items: items as ShoppingListItem[] }, 200);

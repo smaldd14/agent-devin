@@ -67,21 +67,21 @@ export interface ApiResponse<T> {
   
   // Shopping list types
   export interface ShoppingList {
-    id: number;
-    amazon_link?: string;
-    created_at: string;
-    updated_at?: string;
-    items?: ShoppingListItem[];
+  id: number;
+  created_at: string;
+  updated_at?: string;
+  items?: ShoppingListItem[];
   }
   
   export interface ShoppingListItem {
-    id: number;
-    shopping_list_id: number;
-    item_name: string;
-    quantity?: number;
-    unit?: string;
-    category?: string;
-    created_at: string;
+  id: number;
+  shopping_list_id: number;
+  item_name: string;
+  quantity?: number;
+  unit?: string;
+  category?: string;
+  brand?: string;
+  created_at: string;
   }
   
   // AI-generated recipe types

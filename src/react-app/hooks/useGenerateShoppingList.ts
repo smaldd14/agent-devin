@@ -3,7 +3,7 @@ import { fetchApi } from '@services/api';
 import type { ShoppingListItem, GenerateShoppingListResponse } from '@/types/shopping-list';
 
 /**
- * Hook to generate a shopping list for a given recipe via backend API.
+ * Hook to generate a shopping list for one or more recipes via backend API.
  */
 export function useGenerateShoppingList() {
   const [loading, setLoading] = useState(false);
@@ -12,9 +12,9 @@ export function useGenerateShoppingList() {
 
   /**
    * Invoke API to generate shopping list.
-   * @param recipeId Recipe identifier
+   * @param recipeIds Array of recipe identifiers
    */
-  const generate = useCallback(async (recipeId: number) => {
+  const generate = useCallback(async (recipeIds: number[]) => {
     setLoading(true);
     setError(null);
     setData(null);
@@ -23,7 +23,7 @@ export function useGenerateShoppingList() {
         '/shopping-lists/generate',
         {
           method: 'POST',
-          body: JSON.stringify({ recipeId }),
+          body: JSON.stringify({ recipeIds }),
         }
       );
       if (response.success && response.data) {

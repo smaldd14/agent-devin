@@ -4,31 +4,35 @@ import ShoppingListPrompt from '../prompts/shopping-list-generator.txt';
  */
 export class PromptBuilder {
   /**
-   * Construct a JSON-based prompt for missing item computation.
+   * Build a combined prompt for multiple recipes and the current inventory.
+   * Expects the prompt template to have {ingredients} and {inventoryList} placeholders.
    */
   static build(
-    recipe: { id: number; name: string; ingredients: { ingredient_name: string; quantity: number; unit: string }[] },
+    recipes: Array<{ id: number; name: string; ingredients: { ingredient_name: string; quantity: number; unit: string }[] }>,
     inventory: { item_name: string; quantity: number; unit: string }[]
   ): string {
-    // Prepare recipe ingredients list
-    const recipeList = recipe.ingredients
-      .map((ing) =>
-        `{"ingredient_name": "${ing.ingredient_name}", "quantity": ${ing.quantity}, "unit": "${ing.unit}"}`
-      )
-      .join(', ');
-    // Prepare inventory list
-    const inventoryList = inventory
-      .map((item) =>
-        `{"item_name": "${item.item_name}", "quantity": ${item.quantity}, "unit": "${item.unit}"}`
-      )
-      .join(', ');
+    // Flatten all recipe ingredients, tagging with recipeId
+    const allIngredients = recipes.flatMap((r) =>
+      r.ingredients.map((ing) => ({
+        recipeId: r.id,
+        ingredient_name: ing.ingredient_name,
+        quantity: ing.quantity,
+        unit: ing.unit,
+      }))
+    );
+    // JSON-stringify arrays for insertion into template
+    const ingredientsJson = JSON.stringify(allIngredients);
+    const inventoryJson = JSON.stringify(
+      inventory.map((item) => ({
+        item_name: item.item_name,
+        quantity: item.quantity,
+        unit: item.unit,
+      }))
+    );
 
-    const prompt = ShoppingListPrompt
-      .replace('{recipe.id}', recipe.id.toString())
-      .replace('{recipe.name}', recipe.name)
-      .replace('{recipeList}', recipeList)
-      .replace('{inventoryList}', inventoryList);
-
-    return prompt;
+    // Replace placeholders in the prompt template
+    return ShoppingListPrompt
+      .replace('{ingredients}', ingredientsJson)
+      .replace('{inventoryList}', inventoryJson);
   }
 }

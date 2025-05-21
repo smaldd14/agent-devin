@@ -9,6 +9,8 @@ export interface ShoppingListItem {
   quantity: number;
   /** Unit of measurement */
   unit: string;
+  /** ID of the recipe this item is from */
+  recipeId: number;
   /** (Optional) Brand preference */
   brand: string;
 }
