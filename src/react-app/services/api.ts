@@ -35,7 +35,10 @@ export async function fetchApi<T>(
       ...fetchOptions,
       headers,
     });
-    
+    // Handle No Content responses (e.g., DELETE returning 204)
+    if (response.status === 204) {
+      return { success: true } as ApiResponse<T>;
+    }
     const data = await response.json() as ApiResponse<T>;
     
     if (!response.ok) {

@@ -1,15 +1,17 @@
 import { Hono } from 'hono';
-import { 
-  getAllLists, 
-  getListById, 
-  createList, 
-  addListItem 
+import {
+  getAllLists,
+  getListById,
+  createList,
+  addListItem,
+  updateListItem,
+  deleteListItem,
+  deleteList,
+  updateListItemSchema,
+  createListSchema,
+  addListItemSchema,
 } from '../controllers/shopping-lists';
 import { zValidator } from '@hono/zod-validator';
-import { 
-  createListSchema, 
-  addListItemSchema 
-} from '../controllers/shopping-lists';
 
 import { AppType } from '../index';
 import { generateShoppingList } from '../controllers/shopping-lists-generate';
@@ -27,5 +29,12 @@ routes.post(
 routes.get('/:id', getListById);
 routes.post('/', zValidator('json', createListSchema), createList);
 routes.post('/:id/items', zValidator('json', addListItemSchema), addListItem);
+routes.patch(
+  '/:id/items/:itemId',
+  zValidator('json', updateListItemSchema),
+  updateListItem
+);
+routes.delete('/:id/items/:itemId', deleteListItem);
+routes.delete('/:id', deleteList);
 
 export const shoppingListRoutes = routes;

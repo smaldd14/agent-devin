@@ -7,6 +7,8 @@ import InventoryDetailPage from '@pages/Inventory/InventoryDetail';
 import SwipePage from '@pages/Swipe';
 import GenerateRecipesPage from '@pages/GenerateRecipes';
 import MealPlanPage from '@pages/MealPlan';
+import ShoppingListsPage from '@pages/ShoppingLists';
+import ShoppingListDetailPage from '@pages/ShoppingLists/ShoppingListDetail';
 import { ComponentType } from 'react';
 
 export type RouteType = {
@@ -66,6 +68,16 @@ const routes: RoutesConfig = [
     path: "/plan",
     key: "MealPlan",
     component: MealPlanPage,
+  },
+  {
+    path: "/shopping-lists",
+    key: "ShoppingLists",
+    component: ShoppingListsPage,
+  },
+  {
+    path: "/shopping-lists/:id",
+    key: "ShoppingListDetail",
+    component: ShoppingListDetailPage,
   },
 ];
 

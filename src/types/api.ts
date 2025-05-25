@@ -123,7 +123,13 @@ export type RecipeDraftResponse = ApiResponse<RecipeDraft>;
   export type InventoryItemResponse = ApiResponse<InventoryItem>;
   export type InventoryItemsResponse = ApiResponse<InventoryItem[]>;
   export type ShoppingListResponse = ApiResponse<ShoppingList>;
-  export type ShoppingListsResponse = ApiResponse<ShoppingList[]>;
+  export interface ShoppingListsPayload {
+    lists: ShoppingList[];
+    total: number;
+    page: number;
+    perPage: number;
+  }
+  export type ShoppingListsResponse = ApiResponse<ShoppingListsPayload>;
 // Recipe recommendations returned by /api/recipes/recommendations
 /**
  * A lightweight recipe suggestion based on a protein.

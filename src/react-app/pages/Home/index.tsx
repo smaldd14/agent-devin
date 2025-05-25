@@ -56,6 +56,14 @@ const HomePage = () => {
           linkTo="/inventory"
           buttonText="View Inventory"
         />
+
+        <FeatureCard
+          title="Weekly Meal Plans"
+          description="Plan your meals for the week and generate shopping lists"
+          icon={<Package className="h-5 w-5" />}
+          linkTo="/plan"
+          buttonText="View Meal Plans"
+        />
         
         <FeatureCard
           title="Shopping Lists"

@@ -2,7 +2,7 @@ import { gzip } from 'pako';
 import { Buffer } from 'buffer';
 
 // Define the interfaces equivalent to the Python types
-interface ShoppingListItem {
+interface GeneratedShoppingListItem {
   itemName: string;  // Changed from item_name to match your input format
   quantity: number;
   unit: string;
@@ -10,7 +10,7 @@ interface ShoppingListItem {
 }
 
 interface GeneratedShoppingList {
-  items: ShoppingListItem[];
+  items: GeneratedShoppingListItem[];
 }
 
 export class AmazonFreshLinkGenerator {
