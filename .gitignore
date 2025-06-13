@@ -29,3 +29,4 @@ dist-ssr
 
 .cursor
 docs/
+.claude
